@@ -84,278 +84,279 @@ function contenta_enhancements_local_tasks_alter(&$local_tasks) {
   $local_tasks['entity.user.collection']['title'] = '🙋 Users';
 }
 
-/**
- * Implements hook_toolbar_alter()
- */
-function contenta_enhancements_toolbar_alter(&$items) {
-  $current_user = \Drupal::currentUser();
-  $moduleHandler = \Drupal::service('module_handler');
+// Disabled for Druxt rebuild.
+// /**
+//  * Implements hook_toolbar_alter()
+//  */
+// function contenta_enhancements_toolbar_alter(&$items) {
+//   $current_user = \Drupal::currentUser();
+//   $moduleHandler = \Drupal::service('module_handler');
 
-  unset($items['home']);
+//   unset($items['home']);
 
-  $empty_item_cacheability = [
-    '#cache' => [
-      'contexts' => [
-        'user.permissions',
-      ],
-    ],
-  ];
+//   $empty_item_cacheability = [
+//     '#cache' => [
+//       'contexts' => [
+//         'user.permissions',
+//       ],
+//     ],
+//   ];
 
-  $manipulators = array(
-    array('callable' => 'menu.default_tree_manipulators:checkAccess'),
-    array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
-    array('callable' => 'toolbar_menu_navigation_links'),
-  );
-  $menu_tree_contenta = \Drupal::service('toolbar.menu_tree');
-  $parameters = new MenuTreeParameters();
-  $parameters->setMinDepth(1)->setMaxDepth(3)->onlyEnabledLinks();
-  $tree = $menu_tree_contenta->load('contenta', $parameters);
-  $tree = $menu_tree_contenta->transform($tree, $manipulators);
-  $renderable_menu = $menu_tree_contenta->build($tree);
+//   $manipulators = array(
+//     array('callable' => 'menu.default_tree_manipulators:checkAccess'),
+//     array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
+//     array('callable' => 'toolbar_menu_navigation_links'),
+//   );
+//   $menu_tree_contenta = \Drupal::service('toolbar.menu_tree');
+//   $parameters = new MenuTreeParameters();
+//   $parameters->setMinDepth(1)->setMaxDepth(3)->onlyEnabledLinks();
+//   $tree = $menu_tree_contenta->load('contenta', $parameters);
+//   $tree = $menu_tree_contenta->transform($tree, $manipulators);
+//   $renderable_menu = $menu_tree_contenta->build($tree);
 
-  $items['contenta'] = [
-    '#type' => 'toolbar_item',
-    'tab' => [
-      '#type' => 'link',
-      '#title' => t('Contenta CMS'),
-      '#url' => Url::fromRoute('<front>'),
-      '#attributes' => [
-        'title' => t('Welcome to Contenta CMS'),
-        'class' => [
-          'toolbar-icon',
-          'toolbar-icon-menu',
-          'toolbar-icon-contenta',
-        ],
-      ],
-    ],
-    'tray' => [
-      '#heading' => t('Contenta CMS'),
-      '#wrapper_attributes' => [],
-      'menu' => $renderable_menu,
-    ],
-    '#attached' => [
-      'library' => ['contenta_enhancements/contenta_enhancements'],
-    ],
-    '#weight' => -45,
-  ];
+//   $items['contenta'] = [
+//     '#type' => 'toolbar_item',
+//     'tab' => [
+//       '#type' => 'link',
+//       '#title' => t('Contenta CMS'),
+//       '#url' => Url::fromRoute('<front>'),
+//       '#attributes' => [
+//         'title' => t('Welcome to Contenta CMS'),
+//         'class' => [
+//           'toolbar-icon',
+//           'toolbar-icon-menu',
+//           'toolbar-icon-contenta',
+//         ],
+//       ],
+//     ],
+//     'tray' => [
+//       '#heading' => t('Contenta CMS'),
+//       '#wrapper_attributes' => [],
+//       'menu' => $renderable_menu,
+//     ],
+//     '#attached' => [
+//       'library' => ['contenta_enhancements/contenta_enhancements'],
+//     ],
+//     '#weight' => -45,
+//   ];
 
-  if ($current_user->hasPermission('access content overview')) {
-    $items['contenta_content'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#title' => t('Content'),
-        '#url' => Url::fromRoute('system.admin_content'),
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#attributes' => [
-          'class' => ['toolbar-icon', 'toolbar-icon-system-admin-content'],
-        ],
-      ],
-      'tray' => [
-        '#heading' => t('Content'),
-        'items' => [
-          '#theme' => 'menu__toolbar',
-          '#items' => [
-            'content' => [
-              'title' => t('Content'),
-              'url' => Url::fromRoute('system.admin_content'),
-              '#attributes' => ['class' => ['menu-item']]
-            ],
-            'add_content' => [
-              'title' => t('Add Content'),
-              'url' => Url::fromRoute('node.add_page'),
-              '#attributes' => ['class' => ['menu-item']]
-            ],
-          ],
-        ],
-      ],
-      '#weight' => -35,
-    ];
-  }
-  else {
-    $items['contenta_content'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('access content overview')) {
+//     $items['contenta_content'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#title' => t('Content'),
+//         '#url' => Url::fromRoute('system.admin_content'),
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#attributes' => [
+//           'class' => ['toolbar-icon', 'toolbar-icon-system-admin-content'],
+//         ],
+//       ],
+//       'tray' => [
+//         '#heading' => t('Content'),
+//         'items' => [
+//           '#theme' => 'menu__toolbar',
+//           '#items' => [
+//             'content' => [
+//               'title' => t('Content'),
+//               'url' => Url::fromRoute('system.admin_content'),
+//               '#attributes' => ['class' => ['menu-item']]
+//             ],
+//             'add_content' => [
+//               'title' => t('Add Content'),
+//               'url' => Url::fromRoute('node.add_page'),
+//               '#attributes' => ['class' => ['menu-item']]
+//             ],
+//           ],
+//         ],
+//       ],
+//       '#weight' => -35,
+//     ];
+//   }
+//   else {
+//     $items['contenta_content'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->hasPermission('access content overview') && $moduleHandler->moduleExists('media')) {
-    $items['contenta_media'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#title' => t('Media'),
-        '#url' => Url::fromRoute('view.media.media_page_list'),
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#attributes' => [
-          'class' => ['toolbar-icon', 'toolbar-icon-system-themes-page'],
-        ],
-      ],
-      'tray' => [
-        '#heading' => t('Media'),
-        'items' => [
-          '#theme' => 'menu__toolbar',
-          '#items' => [
-            'content' => [
-              'title' => t('Media'),
-              'url' => Url::fromRoute('view.media.media_page_list'),
-              'attributes' => ['class' => ['menu-item']]
-            ],
-            'add_content' => [
-              'title' => t('Add Media'),
-              'url' => Url::fromRoute('entity.media.add_page'),
-              '#attributes' => ['class' => ['menu-item']]
-            ],
-          ],
-        ],
-      ],
-      '#weight' => -32,
-    ];
-  }
-  else {
-    $items['contenta_media'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('access content overview') && $moduleHandler->moduleExists('media')) {
+//     $items['contenta_media'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#title' => t('Media'),
+//         '#url' => Url::fromRoute('view.media.media_page_list'),
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#attributes' => [
+//           'class' => ['toolbar-icon', 'toolbar-icon-system-themes-page'],
+//         ],
+//       ],
+//       'tray' => [
+//         '#heading' => t('Media'),
+//         'items' => [
+//           '#theme' => 'menu__toolbar',
+//           '#items' => [
+//             'content' => [
+//               'title' => t('Media'),
+//               'url' => Url::fromRoute('view.media.media_page_list'),
+//               'attributes' => ['class' => ['menu-item']]
+//             ],
+//             'add_content' => [
+//               'title' => t('Add Media'),
+//               'url' => Url::fromRoute('entity.media.add_page'),
+//               '#attributes' => ['class' => ['menu-item']]
+//             ],
+//           ],
+//         ],
+//       ],
+//       '#weight' => -32,
+//     ];
+//   }
+//   else {
+//     $items['contenta_media'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->hasPermission('administer content types')) {
-    $items['contenta_content_models'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#title' => t('Content Models'),
-        '#url' => Url::fromRoute('entity.node_type.collection'),
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#attributes' => [
-          'class' => ['toolbar-icon', 'toolbar-icon-system-admin-structure'],
-        ],
-      ],
-      '#weight' => -30,
-    ];
-  }
-  else {
-    $items['contenta_content_models'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('administer content types')) {
+//     $items['contenta_content_models'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#title' => t('Content Models'),
+//         '#url' => Url::fromRoute('entity.node_type.collection'),
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#attributes' => [
+//           'class' => ['toolbar-icon', 'toolbar-icon-system-admin-structure'],
+//         ],
+//       ],
+//       '#weight' => -30,
+//     ];
+//   }
+//   else {
+//     $items['contenta_content_models'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->hasPermission('access openapi api docs')) {
-    $items['contenta_api'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#title' => t('API'),
-        '#url' => Url::fromRoute('contenta_enhancements.api'),
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#attributes' => [
-          'class' => ['toolbar-icon', 'toolbar-icon-system-modules-list'],
-        ],
-      ],
-      '#weight' => -25,
-    ];
-  }
-  else {
-    $items['contenta_api'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('access openapi api docs')) {
+//     $items['contenta_api'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#title' => t('API'),
+//         '#url' => Url::fromRoute('contenta_enhancements.api'),
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#attributes' => [
+//           'class' => ['toolbar-icon', 'toolbar-icon-system-modules-list'],
+//         ],
+//       ],
+//       '#weight' => -25,
+//     ];
+//   }
+//   else {
+//     $items['contenta_api'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->hasPermission('administer users') || $current_user->hasPermission('administer simple_oauth entities')) {
-    $items['contenta_data_access'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#title' => t('Access control'),
-        '#url' => $current_user->hasPermission('administer users')
-          ? Url::fromRoute('entity.user.collection')
-          : Url::fromRoute('entity.oauth2_token.collection'),
-        '#attributes' => [
-          'class' => ['toolbar-icon', 'toolbar-icon-entity-user-collection'],
-        ],
-      ],
-      '#weight' => -20,
-    ];
-  }
-  else {
-    $items['contenta_data_access'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('administer users') || $current_user->hasPermission('administer simple_oauth entities')) {
+//     $items['contenta_data_access'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#title' => t('Access control'),
+//         '#url' => $current_user->hasPermission('administer users')
+//           ? Url::fromRoute('entity.user.collection')
+//           : Url::fromRoute('entity.oauth2_token.collection'),
+//         '#attributes' => [
+//           'class' => ['toolbar-icon', 'toolbar-icon-entity-user-collection'],
+//         ],
+//       ],
+//       '#weight' => -20,
+//     ];
+//   }
+//   else {
+//     $items['contenta_data_access'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->hasPermission('access site reports')) {
-    $menu_tree_contenta = \Drupal::service('toolbar.menu_tree');
-    $parameters = new MenuTreeParameters();
-    $parameters->setMinDepth(1)->setMaxDepth(3)->onlyEnabledLinks();
-    $parameters->setRoot('system.admin_reports');
-    $tree = $menu_tree_contenta->load('administration', $parameters);
-    $tree = $menu_tree_contenta->transform($tree, $manipulators);
-    $renderable_reports = $menu_tree_contenta->build($tree);
-    $items['reports'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#title' => t('Reports'),
-        '#url' => Url::fromRoute('system.admin_reports'),
-        '#attributes' => [
-          'title' => t('Reports'),
-          'class' => [
-            'toolbar-icon',
-            'toolbar-icon-system-admin-reports',
-          ],
-        ],
-      ],
-      'tray' => [
-        '#heading' => t('Reports'),
-        '#wrapper_attributes' => [],
-        'menu' => $renderable_reports,
-      ],
-      '#weight' => -5,
-    ];
-  }
-  else {
-    $items['reports'] = $empty_item_cacheability;
-  }
+//   if ($current_user->hasPermission('access site reports')) {
+//     $menu_tree_contenta = \Drupal::service('toolbar.menu_tree');
+//     $parameters = new MenuTreeParameters();
+//     $parameters->setMinDepth(1)->setMaxDepth(3)->onlyEnabledLinks();
+//     $parameters->setRoot('system.admin_reports');
+//     $tree = $menu_tree_contenta->load('administration', $parameters);
+//     $tree = $menu_tree_contenta->transform($tree, $manipulators);
+//     $renderable_reports = $menu_tree_contenta->build($tree);
+//     $items['reports'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#title' => t('Reports'),
+//         '#url' => Url::fromRoute('system.admin_reports'),
+//         '#attributes' => [
+//           'title' => t('Reports'),
+//           'class' => [
+//             'toolbar-icon',
+//             'toolbar-icon-system-admin-reports',
+//           ],
+//         ],
+//       ],
+//       'tray' => [
+//         '#heading' => t('Reports'),
+//         '#wrapper_attributes' => [],
+//         'menu' => $renderable_reports,
+//       ],
+//       '#weight' => -5,
+//     ];
+//   }
+//   else {
+//     $items['reports'] = $empty_item_cacheability;
+//   }
 
-  if ($current_user->isAnonymous()) {
-    $items['login'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#title' => t('Log in'),
-        '#url' => Url::fromRoute('user.login'),
-      ],
-      '#attributes' => ['class' => ['login-tab']],
-      '#wrapper_attributes' => ['class' => ['login-tab']],
-      '#weight' => 99,
-    ];
-  }
-  else {
-    $items['login'] = [
-      '#type' => 'toolbar_item',
-      'tab' => [
-        '#type' => 'link',
-        '#options' => [
-          'set_active_class' => TRUE,
-        ],
-        '#title' => t('Log out'),
-        '#url' => Url::fromRoute('user.logout'),
-      ],
-      '#wrapper_attributes' => ['class' => ['login-tab']],
-      '#weight' => 99,
-    ];
-  }
+//   if ($current_user->isAnonymous()) {
+//     $items['login'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#title' => t('Log in'),
+//         '#url' => Url::fromRoute('user.login'),
+//       ],
+//       '#attributes' => ['class' => ['login-tab']],
+//       '#wrapper_attributes' => ['class' => ['login-tab']],
+//       '#weight' => 99,
+//     ];
+//   }
+//   else {
+//     $items['login'] = [
+//       '#type' => 'toolbar_item',
+//       'tab' => [
+//         '#type' => 'link',
+//         '#options' => [
+//           'set_active_class' => TRUE,
+//         ],
+//         '#title' => t('Log out'),
+//         '#url' => Url::fromRoute('user.logout'),
+//       ],
+//       '#wrapper_attributes' => ['class' => ['login-tab']],
+//       '#weight' => 99,
+//     ];
+//   }
 
-  $items['administration']['tab']['#title'] = t('Advanced');
-  $items['administration']['#weight'] = 30;
-  if (!$current_user->hasPermission('access administration pages')) {
-    $items['administration'] = $empty_item_cacheability;
-  }
+//   $items['administration']['tab']['#title'] = t('Advanced');
+//   $items['administration']['#weight'] = 30;
+//   if (!$current_user->hasPermission('access administration pages')) {
+//     $items['administration'] = $empty_item_cacheability;
+//   }
 
-  unset($items['user']);
-}
+//   unset($items['user']);
+// }
 
 /**
  * Implements hook_ENTITY_TYPE_view_alter().
