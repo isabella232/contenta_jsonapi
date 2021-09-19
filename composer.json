@@ -33,11 +33,6 @@
       "drush/contrib/{$name}": [
         "type:drupal-drush"
       ]
-    },
-    "patches": {
-        "drupal/core": {
-            "Issue #2996114: Argument 2 passed to {closure}() must be an instance of ResourceType, NULL given": "https://www.drupal.org/files/issues/2021-09-17/2996114-201.patch"
-        }
     }
   },
   "require": {},
