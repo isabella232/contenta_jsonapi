@@ -13,3 +13,5 @@ distribution:
     theme: seven
 
 config_install: true
+
+version: '1.0.0'
